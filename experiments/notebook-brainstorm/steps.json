@@ -1,0 +1,26 @@
+[
+  {
+    "id": "sources",
+    "title": "Start with source authority",
+    "explanation": "We begin with a tiny, synthetic consent-review matter. The visual is a table of documents, their authority, and whether each is current. It gives us a concrete object to correct before the test plan expands.",
+    "assumption": "The demo uses synthetic agreements; the real evaluation will keep executed agreements distinct from drafts and superseded terms.",
+    "question": "Which document types should the first real graph trial include?",
+    "code": "documents = [\n    {'id': 'agreement', 'kind': 'executed agreement', 'current': True},\n    {'id': 'amendment', 'kind': 'executed amendment', 'current': True},\n    {'id': 'draft', 'kind': 'draft', 'current': False},\n]\nfor document in documents:\n    print(f\"{document['id']:10} {document['kind']:20} current={document['current']}\")\n"
+  },
+  {
+    "id": "edges",
+    "title": "Trace the consent path",
+    "explanation": "Now we add explicit links from a consent clause to its definition and amendment. The code prints the evidence path; this is a retrieval sketch, not a legal conclusion.",
+    "assumption": "A link is useful only when it points to a citable source span and carries the source's access controls.",
+    "question": "Should the first trial include cross-document amendment links, or only links within one agreement?",
+    "code": "edges = [\n    ('agreement:consent', 'agreement:change_of_control', 'uses definition'),\n    ('agreement:consent', 'amendment:exception', 'modified by'),\n]\nfor source, target, relation in edges:\n    print(f'{source} --{relation}--> {target}')\n"
+  },
+  {
+    "id": "completeness",
+    "title": "Test evidence completeness",
+    "explanation": "A candidate answer that finds only the consent clause is incomplete. The miniature check makes missing dependencies visible before we design the full benchmark.",
+    "assumption": "A correct retrieval result must include every required evidence span; a plausible citation alone is insufficient.",
+    "question": "For the first benchmark, who will label the required evidence and exceptions?",
+    "code": "required = {'agreement:consent', 'agreement:change_of_control', 'amendment:exception'}\nretrieved = {'agreement:consent', 'agreement:change_of_control'}\nmissing = required - retrieved\nprint('Complete:', not missing)\nprint('Missing evidence:', sorted(missing))\n"
+  }
+]
